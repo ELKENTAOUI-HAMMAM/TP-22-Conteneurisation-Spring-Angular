@@ -6,6 +6,6 @@ export class Appareil {
   description?: string;
   state?: boolean
   photo?: string;
-  categorie?: Categorie;
+  categorie: Categorie = new Categorie();
 }
 

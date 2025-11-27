@@ -22,6 +22,13 @@ export class ListAppareilComponent implements OnInit {
   ngOnInit(): void {
     this.findAll();
     this.findAllCategories();
+
+    this.appareilService.getCategories().subscribe((data) => {
+      this.categories = data;
+      if (data.length > 0) {
+        this.newAppareil.categorie = data[0]; // sélection par défaut
+      }
+    });
   }
 
 
@@ -68,18 +75,24 @@ export class ListAppareilComponent implements OnInit {
 
 
   save(): void {
-    console.log(this.newAppareil)
+    if (!this.newAppareil.categorie || !this.newAppareil.categorie.id) {
+      this.showUpdateToast("Veuillez sélectionner une catégorie", "warn", "Attention");
+      return;
+    }
+
+    console.log(this.newAppareil); // vérifier l'objet
     this.appareilService.saveAppareil(this.newAppareil).subscribe(
       (response) => {
-        this.appareils.unshift({...response})
-        this.displaySaveDialog = false
-        this.showUpdateToast("Item added successfully ", "success", "done")
+        this.appareils.unshift({...response});
+        this.displaySaveDialog = false;
+        this.showUpdateToast("Item added successfully ", "success", "done");
       },
       (error) => {
-        this.showUpdateToast(error?.error?.message || "something went wrong", "error", "error")
+        this.showUpdateToast(error?.error?.message || "something went wrong", "error", "error");
       }
     );
   }
+
 
 
   private showUpdateToast(message: string, severity: string, summary: string): void {
